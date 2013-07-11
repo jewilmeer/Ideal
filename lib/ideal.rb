@@ -3,11 +3,11 @@
 require 'nokogiri'
 require 'xmldsig'
 
-require_relative 'ideal/acquirers'
-require_relative 'ideal/gateway'
-require_relative 'ideal/request'
-require_relative 'ideal/response'
-require_relative 'ideal/version'
+require 'ideal/acquirers'
+require 'ideal/gateway'
+require 'ideal/request'
+require 'ideal/response'
+require 'ideal/version'
 
 module Ideal
   AUTHENTICATION_TYPE = 'SHA256_RSA'
