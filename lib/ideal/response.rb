@@ -162,7 +162,7 @@ module Ideal
     end
 
     def verified?
-      signed_document = SignedDocument.new(@body)
+      signed_document = Xmldsig::SignedDocument.new(@body)
       @verified ||= signed_document.validate(Ideal::Gateway.ideal_certificate)
     end
 
@@ -182,7 +182,7 @@ module Ideal
       canonical = node.canonicalize(Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0)
     end
 
-    def signature     
+    def signature
       Base64.decode64(text('//SignatureValue'))
     end
   end
@@ -214,8 +214,8 @@ module Ideal
     # Returns whether or not the authenticity of the message could be
     # verified.
     def verified?
-      signed_document = SignedDocument.new(@body)
-      @verified ||= signed_document.validate(Ideal::Gateway.ideal_certificate)  
+      signed_document = Xmldsig::SignedDocument.new(@body)
+      @verified ||= signed_document.validate(Ideal::Gateway.ideal_certificate)
     end
 
     # Returns the bankaccount number when the transaction was successful.
@@ -223,7 +223,7 @@ module Ideal
       text('//consumerAccountNumber')
     end
 
-    # Returns the name on the bankaccount of the customer when the 
+    # Returns the name on the bankaccount of the customer when the
     # transaction was successful.
     def consumer_name
       text('//consumerName')
@@ -260,8 +260,8 @@ module Ideal
     #
     #   gateway.issuers.list # => [{ :id => '1006', :name => 'ABN AMRO Bank' }]
     def list
-      @response.xpath("//Issuer").map do |issuer|
-        { :id => issuer.xpath("//issuerID")[0].text(), :name => issuer.xpath("//issuerName")[0].text() }
+      @response.xpath("//Issuer").map.with_index do |issuer, i|
+        { :id => issuer.xpath("//issuerID")[i].text(), :name => issuer.xpath("//issuerName")[i].text() }
       end
     end
   end

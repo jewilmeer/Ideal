@@ -9,18 +9,29 @@ GEM
   remote: http://rubygems.org/
   specs:
     activesupport (3.0.0)
+    columnize (0.3.6)
+    debugger (1.6.1)
+      columnize (>= 0.3.1)
+      debugger-linecache (~> 1.2.0)
+      debugger-ruby_core_source (~> 1.2.3)
+    debugger-linecache (1.2.0)
+    debugger-ruby_core_source (1.2.3)
     metaclass (0.0.1)
     mocha (0.10.0)
       metaclass (~> 0.0.1)
     nap (0.5.1)
     nokogiri (1.5.5)
     rake (0.9.2.2)
+    xmldsig (0.2.1)
+      nokogiri
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   activesupport
+  debugger
   ideal!
   mocha
   rake
+  xmldsig
