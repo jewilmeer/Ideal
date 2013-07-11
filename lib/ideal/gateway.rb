@@ -253,16 +253,16 @@ module Ideal
     end
 
     def add_signature(xml)
-      xml.Signature(xmlns: 'http://www.w3.org/2000/09/xmldsig#') do |xml|
+      xml.Signature(:xmlns => 'http://www.w3.org/2000/09/xmldsig#') do |xml|
         xml.SignedInfo do |xml|
-          xml.CanonicalizationMethod(Algorithm: 'http://www.w3.org/2001/10/xml-exc-c14n#')
-          xml.SignatureMethod(Algorithm: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256')
-          xml.Reference(URI: '') do |xml|
+          xml.CanonicalizationMethod(:Algorithm => 'http://www.w3.org/2001/10/xml-exc-c14n#')
+          xml.SignatureMethod(:Algorithm => 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256')
+          xml.Reference(:URI => '') do |xml|
             xml.Transforms do |xml|
-              xml.Transform(Algorithm: 'http://www.w3.org/2000/09/xmldsig#enveloped-signature')
-              xml.Transform(Algorithm: 'http://www.w3.org/2001/10/xml-exc-c14n#')
+              xml.Transform(:Algorithm => 'http://www.w3.org/2000/09/xmldsig#enveloped-signature')
+              xml.Transform(:Algorithm => 'http://www.w3.org/2001/10/xml-exc-c14n#')
             end
-            xml.DigestMethod(Algorithm: 'http://www.w3.org/2001/04/xmlenc#sha256')
+            xml.DigestMethod(:Algorithm => 'http://www.w3.org/2001/04/xmlenc#sha256')
             xml.DigestValue
           end
         end
@@ -299,8 +299,8 @@ module Ideal
       requires!(options, :transaction_id)
 
       timestamp = created_at_timestamp
-      Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
-        xml.AcquirerStatusReq(xmlns: XML_NAMESPACE, version: API_VERSION) do |xml|
+      Nokogiri::XML::Builder.new(:encoding => 'UTF-8') do |xml|
+        xml.AcquirerStatusReq(:xmlns => XML_NAMESPACE, :version => API_VERSION) do |xml|
           xml.createDateTimestamp created_at_timestamp
           xml.Merchant do |xml|
             xml.merchantID self.class.merchant_id
@@ -316,8 +316,8 @@ module Ideal
 
     def build_directory_request
       timestamp = created_at_timestamp
-      xml = Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
-        xml.DirectoryReq(xmlns: XML_NAMESPACE, version: API_VERSION) do |xml|
+      xml = Nokogiri::XML::Builder.new(:encoding => 'UTF-8') do |xml|
+        xml.DirectoryReq(:xmlns => XML_NAMESPACE, :version => API_VERSION) do |xml|
           xml.createDateTimestamp created_at_timestamp
           xml.Merchant do |xml|
             xml.merchantID self.class.merchant_id
@@ -338,8 +338,8 @@ module Ideal
 
       timestamp = created_at_timestamp
 
-      Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
-        xml.AcquirerTrxReq(xmlns: XML_NAMESPACE, version: API_VERSION) do |xml|
+      Nokogiri::XML::Builder.new(:encoding => 'UTF-8') do |xml|
+        xml.AcquirerTrxReq(:xmlns => XML_NAMESPACE, :version => API_VERSION) do |xml|
           xml.createDateTimestamp created_at_timestamp
           xml.Issuer do |xml|
             xml.issuerID options[:issuer_id]
