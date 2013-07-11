@@ -2,6 +2,7 @@
 
 require 'nokogiri'
 require 'xmldsig'
+require 'rest'
 
 require 'ideal/acquirers'
 require 'ideal/gateway'

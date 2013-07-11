@@ -23,7 +23,8 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency             "nokogiri"
-  d.add_dependency             "xmldsig"
+  s.add_dependency             "xmldsig"
+  s.add_dependency             "nap"
   s.add_dependency             "rest"
   s.add_development_dependency "mocha"
 end

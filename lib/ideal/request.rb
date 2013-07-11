@@ -10,7 +10,6 @@ module Ideal
     end
 
     def to_xml
-      #build_xml.to_xml(:save_with => Nokogiri::XML::Node::SaveOptions::AS_XML)
       build_xml.to_xml
     end
 
@@ -47,7 +46,7 @@ module Ideal
           xml.Reference(:URI => '') {
             xml.Transforms {
               xml.Transform(:Algorithm => 'http://www.w3.org/2000/09/xmldsig#enveloped-signature')
-              xml.Transform(:Algorithm: 'http://www.w3.org/2001/10/xml-exc-c14n#')
+              xml.Transform(:Algorithm => 'http://www.w3.org/2001/10/xml-exc-c14n#')
             }
             xml.DigestMethod(:Algorithm => 'http://www.w3.org/2001/04/xmlenc#sha256')
             xml.DigestValue
@@ -68,7 +67,7 @@ module Ideal
 
     def build_xml
       @builder = Nokogiri::XML::Builder.new(:encoding => 'UTF-8') do |xml|
-        xml.send('DirectoryReq', :xmlns => Ideal::XML_NAMESPACE, :version => Ideal::API_VERSION) { 
+        xml.send('DirectoryReq', :xmlns => Ideal::XML_NAMESPACE, :version => Ideal::API_VERSION) {
           add_timestamp(xml)
           add_merchant(xml)
           add_signature(xml)
