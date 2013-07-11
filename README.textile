@@ -24,6 +24,8 @@ In order to use iDEAL you will need to get an iDEAL merchant account from your b
 
 Note that this implementation was started a few years ago. As a result we only support version 2 or the iDEAL protocol, in some cases it might be necessary to configure this in your iDEAL backend or use a different set of API credentials.
 
+UPDATE: We should now support version 3 (work in progress)
+
 h2. Install
 
 The iDEAL gem does not have any large external dependencies. It depends on Nap (a small HTTP library) and Builder (for building XML files). Because of these minor dependencies it's suited to use in Ruby projects other than Ruby on Rails.
@@ -47,8 +49,8 @@ Messages between you and the acquirer are all signed in order to prove their aut
 
 To create a self-signed certificate follow these steps:
 
-* /usr/bin/openssl genrsa -des3 -out private_key.pem -passout pass:the_passphrase 1024
-* /usr/bin/openssl req -x509 -new -key private_key.pem -passin pass:the_passphrase -days 3650 -out private_certificate.cer
+* /usr/bin/openssl genrsa -aes128 -out private_key.pem -passout pass:_the_passphrase_ 2048
+* /usr/bin/openssl req -x509 -new -key private_key.pem -passin pass:_the_passphrase_ -days 1825 -out private_certificate.cer
 
 Substitute _the_passphrase_ with your own passphrase. You will need to configure that passphrase later on, so hand on to it.
 
@@ -74,7 +76,7 @@ bundle install</code></pre>
 
 If you've succeeded you will see the following:
 
-<pre><code>ruby test/remote_test.rb 
+<pre><code>ruby test/remote_test.rb
 Loaded suite test/remote_test
 Started
 ...........
@@ -89,7 +91,7 @@ If you see test errors, you're on your own (; You can run the test in debug mode
 h2. Dashboards
 
 h3. ING
- 
+
 * "Test dashboard":https://idealtest.secure-ing.com/ideal/logon_ing.do
 * "Live dashboard":https://ideal.secure-ing.com/ideal/logon_ing.do
 
@@ -111,12 +113,12 @@ h3. Config
 Configure the Gateway somewhere. One place could be <code>config/initializers/ideal.rb</code>.
 
 <pre>
-unless Rails.env.production?
-  Ideal::Gateway.environment = :test
+if Rails.env.production?
+  Ideal::Gateway.environment = :live #default is :test
 end
 
 # Other banks preloaded are :abnamro and :rabobank
-Ideal::Gateway.acquirer = :ing 
+Ideal::Gateway.acquirer = :ing
 Ideal::Gateway.merchant_id = '00123456789'
 
 # Maybe you'd like another location
@@ -136,13 +138,13 @@ Show a list of all issuers (banks) to choose from.
     @payment = Payment.new
     @issuers = sorted_issuers
   end
-  
+
   private
-  
+
   def ideal
     Ideal::Gateway.new
   end
-  
+
   def sorted_issuers
     # NOTE: this does a GET on the bankend, you might want to memoize this
     ideal.issuers.list.sort_by do |issuer|
@@ -178,7 +180,7 @@ First you'll need to setup a transaction and redirect the consumer there so she 
   def ideal_entrance_code
     Digest::SHA1.hexdigest("#{id}-#{created_at}-#{access_token}")
   end
-  
+
   def ideal_attributes
     {
       # The customer has 30 minutes to complete the iDeal transaction (ISO 8601)
@@ -199,7 +201,7 @@ class PaymentsController < ActionController::Base
       :return_url => payment_url(payment),      # This is where the customer will be returned to
       :description => 'A Dutch windmill'        # This will end up on the customer's bank statement (max 32 ASCII chars)
     ))
-    
+
     response = ideal.setup_purchase(payment.price_in_cents, payment.ideal_attributes)
     if response.success?
       payment.transaction_id = response.transaction_id
@@ -208,7 +210,7 @@ class PaymentsController < ActionController::Base
     else
       Rails.logger.info("Payment initialization failed: [#{response.error_message}] #{response.error_details}")
     end
-    
+
     # Redirect the consumer to the issuer’s payment page.
     redirect_to response.service_url
   end
